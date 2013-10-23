@@ -25,13 +25,12 @@ class House: public Object
 public:
 	House();
 	virtual ~House();
-	virtual void Print() const;
+	virtual void Print(std::ostream&out) const;
 	TAddress GetAddress() const;
-	void SetAddress(TAddress & address);
+	void SetAddress(TAddress const & address);
 	size_t GetNrFloors() const;
-	void SetNrFloors(size_t const & nrfloors);
 	void AddFloor(const Floor &  flobj);
-	House& operator =(House const & c);
+	House& operator =(House const & cfloor);
 	House (const House & cFloor);
 
 private:

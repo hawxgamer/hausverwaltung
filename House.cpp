@@ -12,72 +12,69 @@
 #include "Object.h"
 #include <iostream>
 #include "Types.h"
+#include <iterator>
 
 using namespace std;
 
 // ----------------------------------------------------------
-// CTor / DTor
+// CTor / DTor	/operator overloading
 // ----------------------------------------------------------
-House::House():mNrFloors(0)
+House::House():mNrFloors(1)
 {
 }
 
 House::~House()
 {
-	mFLoors.clear();
-
 }
-/*
-
-Floor* House::Pred(Floor const * pFloor)
-{
-	if (pFloor!=0)
-		return pFloor->GetNrFlat();
-}*/
 
 House::House(const House & cFloor)
 {
-	std::copy ( cFloor.mFLoors.begin(),cFloor.mFLoors.end(), mFLoors.begin() );
+	mNrFloors=cFloor.mNrFloors;
+	mAddress=cFloor.mAddress;
+	copy (cFloor.mFLoors.begin(),cFloor.mFLoors.end(),back_inserter(mFLoors) );
 }
 
-House& House::operator =(House const & c)
+House& House::operator =(House const & cfloor)
 {
-	copy ( (*this).mFLoors.begin(),(*this).mFLoors.end(), mFLoors.begin() );
+	//check for self-assignment
+	if(this!=&cfloor)
+	{
+		mNrFloors=cfloor.mNrFloors;
+		mAddress=cfloor.mAddress;
+		copy (cfloor.mFLoors.begin(),cfloor.mFLoors.end(),back_inserter(mFLoors) );
+	}
 	return *this;
 }
 // ----------------------------------------------------------
 // methods
 // ----------------------------------------------------------
 
-void House::SetAddress(TAddress & address)
+void House::SetAddress(TAddress const & address)
 {
 	mAddress=address;
 }
 
 TAddress House::GetAddress() const
 {
-	cout << mAddress.street << mAddress.housenumber << ","
-		<< mAddress.zipcode << mAddress.city << "\n";
 	return mAddress;
 }
 
 size_t House::GetNrFloors() const
 {
-	cout << mNrFloors << "floors \n";
-	return mNrFloors;
+	return mFLoors.size();
 }
 
-void House::SetNrFloors(size_t const & nrfloors)
-{
-	mNrFloors=nrfloors;
-}
 
 void House::AddFloor(const Floor &  flobj)
 {
-		mFLoors.push_back(flobj);
+	mFLoors.push_back(flobj);
 	mNrFloors++;
 }
-void House::Print() const
+void House::Print(std::ostream&out) const
 {
-	copy(mFLoors.begin(),mFLoors.end(),ostream_iterator<Floor>(std::cout, " "));
+	out <<"House:" <<mAddress.housenumber << " " << mAddress.housenumber
+		<< " " << ", " << mAddress.zipcode << " " << mAddress.city << ", " << mFLoors.size() << " floors\n";
+
+
+	copy(mFLoors.begin(),mFLoors.end(),ostream_iterator<Floor>(out, " "));
 }
